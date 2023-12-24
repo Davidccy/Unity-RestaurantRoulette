@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,25 +8,30 @@ public class UIWeightSettingMenu : MonoBehaviour {
     [SerializeField] private Button _btnAddnew = null;
 
     [SerializeField] private GameObject _goWeightObjectRoot = null;
+    [SerializeField] private GameObject _goMask = null;
+
     [SerializeField] private UIWeightSettingObject _uiObjectRes = null;
     #endregion
 
     #region Internal Fields
-    private int _targetIndex;
     private List<UIWeightSettingObject> _uiWeightObjList = new List<UIWeightSettingObject>();
     #endregion
 
     #region Mono Behaviour Hooks
     private void Awake() {
+        InitUI();
+
         _btnAddnew.onClick.AddListener(ButtonAddNewOnClick);
 
         RestaurantHandler.RegisterDataChangedCallback(RestaurantDataChanged);
+        RestaurantHandler.RegisterStatusChangedCallback(RouletteStatusChanged);
     }
 
     private void OnDestroy() {
         _btnAddnew.onClick.RemoveAllListeners();
 
         RestaurantHandler.UnregisterDataChangedCallback(RestaurantDataChanged);
+        RestaurantHandler.UnregisterStatusChangedCallback(RouletteStatusChanged);
     }
     #endregion
 
@@ -36,13 +41,22 @@ public class UIWeightSettingMenu : MonoBehaviour {
     }
     #endregion
 
-    #region Restaurant Data Handlings
+    #region Restaurant Handler Related Callbacks
     private void RestaurantDataChanged() {
         RefreshRestaurantList();
+        CheckRestaurantAmount();
+    }
+
+    private void RouletteStatusChanged(RouletteStatus status) {
+        _goMask.SetActive(status == RouletteStatus.Spinning);
     }
     #endregion
 
     #region Internal Fields
+    private void InitUI() {
+        _goMask.SetActive(false);
+    }
+
     private void RefreshRestaurantList() {
         List<RestaurantData> restaurantDataList = RestaurantHandler.RestaurantDataList;
 
@@ -70,6 +84,10 @@ public class UIWeightSettingMenu : MonoBehaviour {
     private void ModifyCallback(int index) {
         RestaurantData rData = RestaurantHandler.RestaurantDataList[index];
         RestaurantHandler.SendInputRequest(index, rData.Name, rData.Weight);
+    }
+
+    private void CheckRestaurantAmount() {
+        _btnAddnew.interactable = _uiWeightObjList.Count < 20;
     }
     #endregion
 }

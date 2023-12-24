@@ -26,8 +26,8 @@ public class UIRouletteMenu : MonoBehaviour {
 
     #region Internal Fields
     private bool _isSpinning;
-    private RectTransform _rectRouletteObjectRoot;
     private int _resultIndex = 0;
+    private RectTransform _rectRouletteObjectRoot;
     private List<UIRouletteObject> _uiRouletteObjList = new List<UIRouletteObject>();
     #endregion
 
@@ -64,6 +64,7 @@ public class UIRouletteMenu : MonoBehaviour {
         RestaurantHandler.SetResultRestaurant(null);
 
         _isSpinning = false;
+        RestaurantHandler.SetRouletteStatus(RouletteStatus.Idle);
 
         _btnSpin.gameObject.SetActive(true);
         _btnStop.gameObject.SetActive(false);
@@ -83,6 +84,8 @@ public class UIRouletteMenu : MonoBehaviour {
         }
 
         _isSpinning = true;
+        RestaurantHandler.SetRouletteStatus(RouletteStatus.Spinning);
+
         float passedTime = 0;
         float spinSpeed = 0;
 
@@ -227,6 +230,7 @@ public class UIRouletteMenu : MonoBehaviour {
 
     private void SpinFinished() {
         _isSpinning = false;
+        RestaurantHandler.SetRouletteStatus(RouletteStatus.Idle);
 
         _btnSpin.gameObject.SetActive(true);
         _btnStop.gameObject.SetActive(false);

@@ -6,10 +6,12 @@ public static class RestaurantHandler {
     #region Internal Fields
     private static List<RestaurantData> _rDataList = new List<RestaurantData>();
     private static RestaurantData _resultRData = null;
+    private static RouletteStatus _status = RouletteStatus.Idle;
 
     private static Action _onDataChangedAction;
     private static Action _onResultChangedAction;
     private static Action<int, string, int> _onInputRequestAction;
+    private static Action<RouletteStatus> _onStatusChangedAction;
     #endregion
 
     #region Properties
@@ -34,6 +36,12 @@ public static class RestaurantHandler {
     public static RestaurantData RestaurantResultData {
         get {
             return _resultRData;
+        }
+    }
+
+    public static RouletteStatus Status {
+        get {
+            return _status;
         }
     }
     #endregion
@@ -63,6 +71,14 @@ public static class RestaurantHandler {
         _onInputRequestAction -= action;
     }
 
+    public static void RegisterStatusChangedCallback(Action<RouletteStatus> action) {
+        _onStatusChangedAction += action;
+    }
+
+    public static void UnregisterStatusChangedCallback(Action<RouletteStatus> action) {
+        _onStatusChangedAction -= action;
+    }
+
     public static bool HasRestaurant(int index) {
         return index >= 0 && index < _rDataList.Count;
     }
@@ -86,7 +102,7 @@ public static class RestaurantHandler {
     }
 
     public static void SendInputRequest(int index, string defaultName, int defaultWeight) {
-        _onInputRequestAction(index, defaultName, defaultWeight);
+        _onInputRequestAction.Invoke(index, defaultName, defaultWeight);
     }
 
     public static void AddNewRestaurant(RestaurantData rData) {
@@ -128,6 +144,12 @@ public static class RestaurantHandler {
         _resultRData = resultRData;
 
         _onResultChangedAction.Invoke();
+    }
+
+    public static void SetRouletteStatus(RouletteStatus status) {
+        _status = status;
+
+        _onStatusChangedAction.Invoke(status);
     }
     #endregion
 }

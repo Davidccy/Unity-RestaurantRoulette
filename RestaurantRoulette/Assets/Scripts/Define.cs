@@ -7,6 +7,11 @@ public class RestaurantData {
     public int Weight;
 }
 
+public enum RouletteStatus { 
+    Idle,
+    Spinning,
+}
+
 public class Define {
     // No Data
 }
