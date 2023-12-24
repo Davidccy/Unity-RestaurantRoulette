@@ -98,6 +98,10 @@ public class UIInputMenu : MonoBehaviour {
             msg = string.Format("Please enter number.");
             return false;
         }
+        else if (inputWeight <= 0) {
+            msg = string.Format("Weight can not be 0 or negative number");
+            return false;
+        }
 
         return true;
     }
