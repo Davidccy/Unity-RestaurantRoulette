@@ -13,7 +13,7 @@ public class UIWeightSettingObject : MonoBehaviour {
 
     #region Internal Fields
     private int _index;
-    private Action<int> _actionModifyCallback = null;
+    private Action<int> _actionModify = null;
     #endregion
 
     #region Properties
@@ -36,17 +36,17 @@ public class UIWeightSettingObject : MonoBehaviour {
 
     #region UI Button Handlings
     private void ButtonModifyOnClick() {
-        if (_actionModifyCallback == null) {
+        if (_actionModify == null) {
             return;
         }
 
-        _actionModifyCallback(_index);
+        _actionModify(_index);
     }
     #endregion
 
     #region APIs
     public void SetModifyCallback(Action<int> cb) {
-        _actionModifyCallback = cb;
+        _actionModify = cb;
     }
 
     public void SetIndex(int index) {

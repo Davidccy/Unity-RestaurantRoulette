@@ -10,11 +10,11 @@ public class UIResultMenu : MonoBehaviour {
     private void Awake() {
         InitUI();
 
-        RestaurantHandler.RegisterResultCallback(RestaurantResultDataChanged);
+        RestaurantHandler.RegisterResultChangedCallback(RestaurantResultDataChanged);
     }
 
     private void OnDestroy() {
-        RestaurantHandler.UnregisterResultCallback(RestaurantResultDataChanged);
+        RestaurantHandler.UnregisterResultChangedCallback(RestaurantResultDataChanged);
     }
     #endregion
 

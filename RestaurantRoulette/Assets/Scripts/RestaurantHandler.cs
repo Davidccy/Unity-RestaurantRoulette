@@ -1,14 +1,15 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public static class RestaurantHandler {
     #region Internal Fields
     private static List<RestaurantData> _rDataList = new List<RestaurantData>();
     private static RestaurantData _resultRData = null;
 
-    private static UnityAction _dataChangedCallback;
-    private static UnityAction _resultChangedCallback;
+    private static Action _onDataChangedAction;
+    private static Action _onResultChangedAction;
+    private static Action<int, string, int> _onInputRequestAction;
     #endregion
 
     #region Properties
@@ -38,20 +39,28 @@ public static class RestaurantHandler {
     #endregion
 
     #region APIs
-    public static void RegisterCallback(UnityAction action) {
-        _dataChangedCallback += action;
+    public static void RegisterDataChangedCallback(Action action) {
+        _onDataChangedAction += action;
     }
 
-    public static void UnregisterCallback(UnityAction action) {
-        _dataChangedCallback -= action;
+    public static void UnregisterDataChangedCallback(Action action) {
+        _onDataChangedAction -= action;
     }
 
-    public static void RegisterResultCallback(UnityAction action) {
-        _resultChangedCallback += action;
+    public static void RegisterResultChangedCallback(Action action) {
+        _onResultChangedAction += action;
     }
 
-    public static void UnregisterResultCallback(UnityAction action) {
-        _resultChangedCallback -= action;
+    public static void UnregisterResultChangedCallback(Action action) {
+        _onResultChangedAction -= action;
+    }
+
+    public static void RegisterInputRequestCallback(Action<int, string, int> action) {
+        _onInputRequestAction += action;
+    }
+
+    public static void UnregisterInputRequestCallback(Action<int, string, int> action) {
+        _onInputRequestAction -= action;
     }
 
     public static bool HasRestaurant(int index) {
@@ -68,10 +77,22 @@ public static class RestaurantHandler {
         return false;
     }
 
+    public static RestaurantData GetRestaurant(int index) {
+        if (index >= 0 && index < _rDataList.Count) {
+            return _rDataList[index];
+        }
+
+        return null;
+    }
+
+    public static void SendInputRequest(int index, string defaultName, int defaultWeight) {
+        _onInputRequestAction(index, defaultName, defaultWeight);
+    }
+
     public static void AddNewRestaurant(RestaurantData rData) {
         _rDataList.Add(rData);
 
-        _dataChangedCallback.Invoke();
+        _onDataChangedAction.Invoke();
     }
 
     public static void ModifyRestaurant(int index, RestaurantData newRData) {
@@ -82,31 +103,31 @@ public static class RestaurantHandler {
 
         _rDataList[index] = newRData;
 
-        _dataChangedCallback.Invoke();
+        _onDataChangedAction.Invoke();
     }
 
     public static void RemoveRestaurant(RestaurantData rData) {
         _rDataList.Remove(rData);
 
-        _dataChangedCallback.Invoke();
+        _onDataChangedAction.Invoke();
     }
 
     public static void RemoveRestaurant(int index) {
         _rDataList.RemoveAt(index);
 
-        _dataChangedCallback.Invoke();
+        _onDataChangedAction.Invoke();
     }
 
     public static void ClearAllRestaurant() {
         _rDataList.Clear();
 
-        _dataChangedCallback.Invoke();
+        _onDataChangedAction.Invoke();
     }
 
     public static void SetResultRestaurant(RestaurantData resultRData) {
         _resultRData = resultRData;
 
-        _resultChangedCallback.Invoke();
+        _onResultChangedAction.Invoke();
     }
     #endregion
 }

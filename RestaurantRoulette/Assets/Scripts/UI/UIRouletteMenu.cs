@@ -38,14 +38,14 @@ public class UIRouletteMenu : MonoBehaviour {
         _btnSpin.onClick.AddListener(ButtonSpinOnClick);
         _btnStop.onClick.AddListener(ButtonStopOnClick);
 
-        RestaurantHandler.RegisterCallback(RestaurantDataChanged);
+        RestaurantHandler.RegisterDataChangedCallback(RestaurantDataChanged);
     }
 
     private void OnDestroy() {
         _btnSpin.onClick.RemoveAllListeners();
         _btnStop.onClick.RemoveAllListeners();
 
-        RestaurantHandler.UnregisterCallback(RestaurantDataChanged);
+        RestaurantHandler.UnregisterDataChangedCallback(RestaurantDataChanged);
     }
     #endregion
 
