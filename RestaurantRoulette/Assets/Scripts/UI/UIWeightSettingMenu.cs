@@ -60,6 +60,8 @@ public class UIWeightSettingMenu : MonoBehaviour {
     private void RefreshRestaurantList() {
         List<RestaurantData> restaurantDataList = RestaurantHandler.RestaurantDataList;
 
+        int totalWeight = RestaurantHandler.TotalWeight;
+
         for (int i = 0; i < restaurantDataList.Count; i++) {
             if (i >= _uiWeightObjList.Count) {
                 UIWeightSettingObject newObj = Instantiate(_uiObjectRes, _goWeightObjectRoot.transform);
@@ -72,7 +74,7 @@ public class UIWeightSettingMenu : MonoBehaviour {
             obj.SetModifyCallback(ModifyCallback);
             obj.SetIndex(i);
             obj.SetName(rData.Name);
-            obj.SetWeight(rData.Weight);
+            obj.SetWeight(rData.Weight, totalWeight);
             obj.gameObject.SetActive(true);
         }
 

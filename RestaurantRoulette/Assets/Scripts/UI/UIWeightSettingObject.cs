@@ -8,6 +8,7 @@ public class UIWeightSettingObject : MonoBehaviour {
     [SerializeField] private Button _btnModify = null;
     [SerializeField] private TextMeshProUGUI _textName = null;
     [SerializeField] private TextMeshProUGUI _textWeight = null;
+    [SerializeField] private TextMeshProUGUI _textWeightPercentage = null;
     [SerializeField] private Image _image = null;
     #endregion
 
@@ -57,8 +58,11 @@ public class UIWeightSettingObject : MonoBehaviour {
         _textName.text = name;
     }
 
-    public void SetWeight(int weight) {
-        _textWeight.text = string.Format("Weight: {0}", weight);
+    public void SetWeight(int weight, int totalWeight) {
+        _textWeight.text = string.Format("W = {0}", weight);
+
+        float percentage = ((float) weight / totalWeight) * 100;
+        _textWeightPercentage.text = string.Format("P = {0:0.000}%", percentage);
     }
 
     public void SetColor(Color color) {

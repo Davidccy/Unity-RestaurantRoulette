@@ -10,8 +10,11 @@ public class UIRouletteMenu : MonoBehaviour {
     [SerializeField] private Button _btnSpin = null;
     [SerializeField] private Button _btnStop = null;
 
-    [SerializeField] private GameObject _goRouletteObjectRoot = null;
-    [SerializeField] private UIRouletteObject _uiObjectRes = null;
+    [SerializeField] private RectTransform _rectRouletteObjectRoot = null;
+    [SerializeField] private UIRouletteObject _uiRouletteObjectRes = null;
+
+    [SerializeField] private RectTransform _rectRouletteAsistantObjectRoot = null;
+    [SerializeField] private UIRouletteAssistantObject _uiRouletteAssitantObjectRes = null;
 
     [SerializeField] private List<Color> _colorList = null;
     [SerializeField] private Color _colorSpecial = Color.black;
@@ -27,8 +30,9 @@ public class UIRouletteMenu : MonoBehaviour {
     #region Internal Fields
     private bool _isSpinning;
     private int _resultIndex = 0;
-    private RectTransform _rectRouletteObjectRoot;
+
     private List<UIRouletteObject> _uiRouletteObjList = new List<UIRouletteObject>();
+    private List<UIRouletteAssistantObject> _uiRouletteAssistantObjList = new List<UIRouletteAssistantObject>();
     #endregion
 
     #region Mono Behaviour Hooks
@@ -74,6 +78,7 @@ public class UIRouletteMenu : MonoBehaviour {
     #region Restaurant Data Handlings
     private void RestaurantDataChanged() {
         RefreshRoulette();
+        RefreshRouletteAssistant();
     }
     #endregion
 
@@ -121,8 +126,6 @@ public class UIRouletteMenu : MonoBehaviour {
 
         _btnStop.gameObject.SetActive(false);
         _btnStop.interactable = false;
-
-        _rectRouletteObjectRoot = _goRouletteObjectRoot.transform as RectTransform;
     }
 
     private void RefreshRoulette() {
@@ -145,7 +148,7 @@ public class UIRouletteMenu : MonoBehaviour {
 
         for (int i = 0; i < restaurantDataList.Count; i++) {
             if (i >= _uiRouletteObjList.Count) {
-                UIRouletteObject newObj = Instantiate(_uiObjectRes, _goRouletteObjectRoot.transform);
+                UIRouletteObject newObj = Instantiate(_uiRouletteObjectRes, _rectRouletteObjectRoot);
                 _uiRouletteObjList.Add(newObj);
             }
 
@@ -167,6 +170,39 @@ public class UIRouletteMenu : MonoBehaviour {
 
         for (int i = restaurantDataList.Count; i < _uiRouletteObjList.Count; i++) {
             _uiRouletteObjList[i].gameObject.SetActive(false);
+        }
+    }
+
+    private void RefreshRouletteAssistant() {
+        List<RestaurantData> restaurantDataList = RestaurantHandler.RestaurantDataList;
+
+        int totalWeight = RestaurantHandler.TotalWeight;
+
+        int accumulativeWeight = 0;
+        float percentageWeight = 0;
+
+        for (int i = 0; i < restaurantDataList.Count; i++) {
+            RestaurantData rData = restaurantDataList[i];
+            percentageWeight = (float) rData.Weight / totalWeight;
+
+            if (i >= _uiRouletteAssistantObjList.Count) {
+                UIRouletteAssistantObject newObj = Instantiate(_uiRouletteAssitantObjectRes, _rectRouletteAsistantObjectRoot);
+                _uiRouletteAssistantObjList.Add(newObj);
+            }
+
+            UIRouletteAssistantObject obj = _uiRouletteAssistantObjList[i];
+
+            obj.SetName(rData.Name);
+            obj.SetColor(GetColor(i, i == restaurantDataList.Count - 1));
+            obj.SetWeight(rData.Weight, totalWeight);
+            obj.SetDirectiveLineEnd(_uiRouletteObjList[i].RectDirectiveLinePoint);
+            obj.gameObject.SetActive(percentageWeight <= 0.01f);
+
+            accumulativeWeight += rData.Weight;
+        }
+
+        for (int i = restaurantDataList.Count; i < _uiRouletteAssistantObjList.Count; i++) {
+            _uiRouletteAssistantObjList[i].gameObject.SetActive(false);
         }
     }
 

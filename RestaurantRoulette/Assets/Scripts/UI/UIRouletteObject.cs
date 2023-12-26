@@ -9,6 +9,8 @@ public class UIRouletteObject : MonoBehaviour {
     [SerializeField] private RectTransform _rectText = null;
     [SerializeField] private TextMeshProUGUI _textName = null;
     [SerializeField] private Image _image = null;
+    [SerializeField] private RectTransform _rectDirectiveLinePointRoot = null;
+    [SerializeField] private RectTransform _rectDirectiveLinePoint = null;
 
     [Header("Performance")]
     [SerializeField] private float _animationTime = 0.8f;
@@ -34,6 +36,14 @@ public class UIRouletteObject : MonoBehaviour {
     }
     #endregion
 
+    #region Properties
+    public RectTransform RectDirectiveLinePoint {
+        get {
+            return _rectDirectiveLinePoint;
+        }
+    }
+    #endregion
+
     #region APIs
     public void SetName(string name) {
         _textName.text = name;
@@ -53,6 +63,7 @@ public class UIRouletteObject : MonoBehaviour {
 
         float angle = weight == totalWeight ? (90 - 180 * 0.5f) : (90 - 180 * fillAmount);
         _rectText.localRotation = Quaternion.Euler(0, 0, angle);
+        _rectDirectiveLinePointRoot.localRotation = Quaternion.Euler(0, 0, angle);
     }
 
     public void SetAngle(float angle) {
